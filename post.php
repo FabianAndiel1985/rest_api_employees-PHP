@@ -16,15 +16,30 @@ $housenumber=htmlspecialchars(strip_tags($request->housenumber));
 $zip=htmlspecialchars(strip_tags($request->zip));
 $country=htmlspecialchars(strip_tags($request->country));
 
+
 $pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
 "root", "");
 
-$stmt = $pdo->prepare("INSERT INTO employees (id,firstname,lastname,street,housenumber,zip,country) VALUES (?,?,?,?,?,?,?)");
+$stmt = $pdo->prepare("INSERT INTO employees (id,firstname,lastname,street,housenumber,zip,country) VALUES (null,?,?,?,?,?,?)");
 
-if($stmt->execute(array(null,$firstname, $lastname, $street, $housenumber, $zip, $country))) {
-    createJSonResponse(405,"Succeeded saving in DB");
+
+
+try{
+    $stmt->execute(array($firstname, $lastname, $street, $housenumber, $zip, $country));
+    createJSonResponse(200,"Succeeded saving in DB");
 }
 
- else {
-    createJSonResponse(400,'Request not succeeded');
- }
+catch(PDOException $exception){ 
+    createJSonResponse(400,"Could not save entry in DB");
+}
+
+$pdo = null;
+
+// Warum klappt das nicht :
+// if ($stmt->rowCount() >  0 ) {
+//     createJSonResponse(200,"Succeeded saving in DB");
+// }
+
+
+
+ 

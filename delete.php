@@ -1,5 +1,7 @@
 <?php 
 
+//VALDATION PACKAGE WITH COMPOSER
+
 require_once "./database.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "DELETE"){
@@ -13,16 +15,30 @@ $pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
 
 $stmt = $pdo->prepare("DELETE FROM employees WHERE id=?");
 
-print_r($request->id);
+$stmt->execute(array($request->id));
 
+if ($stmt->rowCount() >  0 ) {
+    createJSonResponse(200,'Request succeeded');
+}
 
-// if($stmt->execute(array($request->id))) {
-//     createJSonResponse(200,"DB entry was deleted successfully");
+if($stmt->rowCount() <=  0 ) {
+    createJSonResponse(400,'Request not succeeded');
+}
+
+$pdo = null;
+
+//Why doesnt this worK: 
+
+// try {
+//     $stmt->execute(array(2000));
+//     echo "im here";
 // }
 
-//  else {
+// catch (error) {
 //     createJSonResponse(400,'Request not succeeded');
-//  }
+// }
+
+
 
 
 
