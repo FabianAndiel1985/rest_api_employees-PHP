@@ -22,8 +22,6 @@ $pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
 
 $stmt = $pdo->prepare("INSERT INTO employees (id,firstname,lastname,street,housenumber,zip,country) VALUES (null,?,?,?,?,?,?)");
 
-
-
 try{
     $stmt->execute(array($firstname, $lastname, $street, $housenumber, $zip, $country));
     createJSonResponse(200,"Succeeded saving in DB");
@@ -34,12 +32,3 @@ catch(PDOException $exception){
 }
 
 $pdo = null;
-
-// Warum klappt das nicht :
-// if ($stmt->rowCount() >  0 ) {
-//     createJSonResponse(200,"Succeeded saving in DB");
-// }
-
-
-
- 

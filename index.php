@@ -4,7 +4,10 @@ require "./services.php";
 
 $route = strtolower($_SERVER["PATH_INFO"]);
 
-$possibleRoutes = ["/index","/new","/delete"];
+$possibleRoutes = ["/index","/new","/delete","/update","/get"];
+
+const PROPERTIES=["id","firstname","lastname","street","housenumber","zip","country"];
+
 
 if(routeExists($route,$possibleRoutes)) {
     
@@ -17,6 +20,12 @@ if(routeExists($route,$possibleRoutes)) {
             break;
         case "/delete":
             require "./delete.php";
+        break;
+        case "/update":
+            require "./update.php";
+        break;
+        case "/get":
+            require "./get.php";
         break;
     }
 }

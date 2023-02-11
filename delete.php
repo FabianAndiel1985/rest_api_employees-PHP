@@ -27,6 +27,7 @@ if($stmt->rowCount() <=  0 ) {
 
 $pdo = null;
 
+//To do make it with row Count
 //Why doesnt this worK: 
 
 // try {
