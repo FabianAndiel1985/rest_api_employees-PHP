@@ -1,44 +1,12 @@
 <?php
 
-require_once "./database.php";
-
-//Todo das checken ob der Request nur erlaubte properties hat verlagern in den service
-//In der post methode auch checken ob ALLE PROPERTIES VORHANDEN SIND
-//GET METHIDE MACHEN
-//AUF GITHUB VERÖFFENTLICHEN LETZTE REST API MIT PLAIN PHP
-
-
-if ($_SERVER["REQUEST_METHOD"] !== "PATCH"){
-    createJSonResponse(405,"Only patch requests alloweed");
-} 
-
 $request = json_decode(file_get_contents('php://input'));
 
-$validatedResult = validateRequest(PROPERTIES, $request);
-
-if($validatedResult != 1) {
-    createJSonResponse(404,"The request contains not alloweed parameters");
-    die();
-}
+validateRequest(PROPERTIES, $request, "PATCH",$_SERVER["REQUEST_METHOD"]);
 
 $id = $request->id;
 
-$pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
-"root", "");
-
-$preparedStmntString = "SELECT * FROM employees"; 
-
-$idArray = []; 
-
-foreach ($pdo->query($preparedStmntString) as $row) {
-    array_push($idArray,$row['id']);
- }
-
-if(!in_array($id, $idArray)) {
-    createJSonResponse(404,"The is not entry with the id {$id}");
-    die();
-}
-
+validateId($pdo,$id);
 
 $requestArray = get_object_vars($request);
 
@@ -63,8 +31,6 @@ foreach ($requestKeys as $key=>$value) {
 
 $preparedStmntString = "UPDATE employees SET ".$preparedStmntValues." WHERE id=?";                                                                                                                                
 
-$pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
-"root", "");
 
 $stmt = $pdo->prepare($preparedStmntString);
 

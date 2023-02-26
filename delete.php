@@ -1,17 +1,14 @@
 <?php 
 
-//VALDATION PACKAGE WITH COMPOSER
-
 require_once "./database.php";
-
-if ($_SERVER["REQUEST_METHOD"] !== "DELETE"){
-    createJSonResponse(405,"Only delete requests alloweed");
-} 
 
 $request = json_decode(file_get_contents('php://input'));
 
-$pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
- "root", "");
+validateRequest(PROPERTIES, $request, "DELETE",$_SERVER["REQUEST_METHOD"]);
+
+$id = $request->id;
+
+validateId($pdo,$id);
 
 $stmt = $pdo->prepare("DELETE FROM employees WHERE id=?");
 
@@ -26,19 +23,6 @@ if($stmt->rowCount() <=  0 ) {
 }
 
 $pdo = null;
-
-//To do make it with row Count
-//Why doesnt this worK: 
-
-// try {
-//     $stmt->execute(array(2000));
-//     echo "im here";
-// }
-
-// catch (error) {
-//     createJSonResponse(400,'Request not succeeded');
-// }
-
 
 
 

@@ -2,25 +2,27 @@
 
 require_once "./database.php";
 
-if ($_SERVER["REQUEST_METHOD"] !== "GET"){
-    createJSonResponse(405,"Only post requests alloweed");
-} 
+$request = false;
 
+validateRequest(PROPERTIES, $request, "GET",$_SERVER["REQUEST_METHOD"]);
 
+$resultArray=[];
 
+// hier noch abschliessen und dann ein Array mit Standard Obj bilden
+ $preparedStmntString = "SELECT * FROM employees"; 
+ 
 
- $pdo = new PDO("mysql:host=localhost;dbname=rest_api_employees;charset=utf8",
- "root", "");
+ foreach ($pdo->query($preparedStmntString) as $row) {
+    // print_r($row);
+    $obj = new stdClass();
+    $obj->id = $row['id'];
+    $obj->firstname = $row['firstname'];
+    $obj->lastname = $row['lastname'];
+    $obj->street = $row['street'];
+    $obj->housenumber = $row['housenumber'];
+    $obj->zip = $row['zip'];
+    $obj->country = $row['country'];
+    array_push($resultArray,$obj);
+ }
 
-// $stmt = $pdo->prepare("INSERT INTO employees (id,firstname,lastname,street,housenumber,zip,country) VALUES (null,?,?,?,?,?,?)");
-
-// try{
-//     $stmt->execute(array($firstname, $lastname, $street, $housenumber, $zip, $country));
-//     createJSonResponse(200,"Succeeded saving in DB");
-// }
-
-// catch(PDOException $exception){ 
-//     createJSonResponse(400,"Could not save entry in DB");
-// }
-
-// $pdo = null;
+ createJSonResponse(200,json_encode($resultArray));
